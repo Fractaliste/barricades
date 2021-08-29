@@ -10,10 +10,15 @@ export class Emplacement {
 
     }
 
-    setPrevious(previous: Emplacement) {
-        this.previous.push(previous)
+    setPrevious(previous: Emplacement | undefined) {
+        if (previous !== undefined && previous.type !== EmplacementType.VIDE) {
+            this.previous.push(previous)
+        }
     }
-    setNext(next: Emplacement) {
-        this.next.push(next)
+    setNext(next: Emplacement | undefined) {
+        if (next !== undefined && next.type !== EmplacementType.VIDE) {
+            this.next.push(next)
+        }
     }
+
 }

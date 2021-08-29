@@ -1,0 +1,20 @@
+circle {
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.type-0 circle {
+    fill: gold;
+}
+
+.type-1 circle {
+    fill: silver;
+}
+
+.type-2 circle {
+    fill: #080808;
+}
+
+.type-3 circle {
+    display: none;
+}

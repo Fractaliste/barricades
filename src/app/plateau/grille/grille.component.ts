@@ -8,12 +8,15 @@ import { GrilleInitializer } from '../grille-initializer';
   styleUrls: ['./grille.component.css']
 })
 export class GrilleComponent implements OnInit {
+  grille: Emplacement[][];
 
-  grille?: { depart: Emplacement; lignes: void; };
 
 
   constructor() {
-    new GrilleInitializer().initGrille()
+    const timerLabel = "GrilleInitializer"
+    console.time(timerLabel)
+    this.grille = new GrilleInitializer().initGrille()
+    console.timeEnd(timerLabel)
   }
 
 

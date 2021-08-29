@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EmplacementType } from 'src/app/emplacement-type';
+import { Emplacement } from '../emplacement';
 
 @Component({
   selector: 'app-emplacement',
@@ -8,8 +9,8 @@ import { EmplacementType } from 'src/app/emplacement-type';
 })
 export class EmplacementComponent implements OnInit {
 
-  previous?: EmplacementComponent[]
-  next?: EmplacementComponent[]
+  @Input() emplacement!: Emplacement
+  emplacementType = EmplacementType
 
   constructor() { }
 
