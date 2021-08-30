@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { IJoueur } from 'src/app/joueur/ijoueur';
+import { DefaultJoueur } from 'src/app/joueur/impl/default-joueur';
+import { JoueurManager } from 'src/app/joueur/joueur-manager';
 import { Emplacement } from '../emplacement';
 import { GrilleInitializer } from '../grille-initializer';
 
@@ -9,6 +12,7 @@ import { GrilleInitializer } from '../grille-initializer';
 })
 export class GrilleComponent implements OnInit {
   grille: Emplacement[][];
+  joueurManager: JoueurManager
 
   static timerLabel = "GrilleInitializer"
 
@@ -16,10 +20,13 @@ export class GrilleComponent implements OnInit {
   constructor() {
     console.time(GrilleComponent.timerLabel)
     this.grille = new GrilleInitializer().initGrille()
+
+    this.joueurManager = new JoueurManager()
+
     console.timeLog(GrilleComponent.timerLabel)
   }
-  
-  
+
+
   ngOnInit(): void {
     console.timeEnd(GrilleComponent.timerLabel)
   }
