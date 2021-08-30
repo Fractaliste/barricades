@@ -10,17 +10,18 @@ import { GrilleInitializer } from '../grille-initializer';
 export class GrilleComponent implements OnInit {
   grille: Emplacement[][];
 
+  static timerLabel = "GrilleInitializer"
 
 
   constructor() {
-    const timerLabel = "GrilleInitializer"
-    console.time(timerLabel)
+    console.time(GrilleComponent.timerLabel)
     this.grille = new GrilleInitializer().initGrille()
-    console.timeEnd(timerLabel)
+    console.timeLog(GrilleComponent.timerLabel)
   }
-
-
+  
+  
   ngOnInit(): void {
+    console.timeEnd(GrilleComponent.timerLabel)
   }
 
 }

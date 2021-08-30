@@ -38,7 +38,7 @@ export class GrilleInitializer {
         let grille: Emplacement[][] = grille_types.map((array, index) => array.map((v, i) => mapToEntity(v, i, index)))
 
         linkTopAndBottom(grille)
-        linkSibbling(grille)
+        calculateDistance(grille, grille[0][9 - 1])
         console.log(grille);
         return grille
     }
@@ -90,23 +90,54 @@ function linkTopAndBottom(grille: Emplacement[][]) {
     })
 }
 
-function linkSibbling(grille: Emplacement[][]) {
-
-    grille.flatMap(el => el).filter(excludeEmpty).forEach(emplacement => {
-        let line = grille[emplacement.line]
-
-
-        if (emplacement.next.length > 0) {
-            emplacement.setPrevious(line[emplacement.column - 1])
-            emplacement.setPrevious(line[emplacement.column + 1])
-        } else if (emplacement.previous.length > 0) {
-            emplacement.setNext(line[emplacement.column - 1])
-            emplacement.setNext(line[emplacement.column + 1])
-        }
-    })
-}
-
 function excludeEmpty(emplacement: Emplacement) {
     return emplacement.type !== EmplacementType.VIDE
+}
+
+function calculateDistance(grille: Emplacement[][], start: Emplacement) {
+
+    let fn = (current: Emplacement, distance: number = 0) => {
+        current.setDistance(distance)
+        if (current.previous.length > 0) {
+            current.previous.forEach(prev => ensureLink(prev, current))
+        }
+        let voisins = getVoisins(grille[current.line], current.column)
+        voisins.filter(excludeEmpty).filter(v => v.distance === undefined).forEach(prev => ensureLink(prev, current))
+
+        return current.previous
+    }
+
+    let i = 0;
+
+    let distance = 0
+    let previous: Set<Emplacement> = new Set(fn(start))
+    while (previous.size > 0) {
+        distance++
+        previous = new Set([...previous].flatMap(p => fn(p, distance)))
+        if (i++ > 40) {
+            console.log("Breaked !");
+
+            break;
+        }
+
+    }
+
+}
+
+function getVoisins(ligne: Emplacement[], column: number) {
+    return [ligne[column - 1], ligne[column + 1]].filter(voisin => voisin !== undefined)
+}
+
+function ensureLink(previous: Emplacement, next: Emplacement): void {
+    if (previous.next.indexOf(next) === -1) {
+        previous.setNext(next)
+        // console.log("Next enforced");
+
+    }
+    if (next.previous.indexOf(previous) === -1) {
+        next.setPrevious(previous)
+        // console.log("Previous enforced");
+
+    }
 }
 

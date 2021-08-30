@@ -4,7 +4,7 @@ export class Emplacement {
 
     previous: Emplacement[] = []
     next: Emplacement[] = []
-
+    distance: number | undefined = undefined;
 
     constructor(public type: EmplacementType, public line: number, public column: number) {
 
@@ -20,5 +20,7 @@ export class Emplacement {
             this.next.push(next)
         }
     }
-
+    setDistance(distance: number) {
+        this.distance = distance
+    }
 }
