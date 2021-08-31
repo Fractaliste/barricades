@@ -1,13 +1,27 @@
+import { Injectable } from '@angular/core';
 import { EmplacementType } from "../emplacement-type";
 import { Emplacement } from "./emplacement";
 
-export class GrilleInitializer {
+export class Grille extends Array<Array<Emplacement>> {
 
+}
+
+class GrilleInitializer {
+
+    grille: Grille | undefined
 
     /**
-     * initGrille
+     * getGrille
      */
-    public initGrille() {
+    public getGrille(): Grille {
+        if (!this.grille) {
+            this.grille = this.initGrille()
+        }
+        return this.grille
+    }
+
+
+    initGrille() {
 
         let l1 = this.getEmptyExcept(9)
         l1[9 - 1] = EmplacementType.ARRIVEE
@@ -96,7 +110,7 @@ function excludeEmpty(emplacement: Emplacement) {
 
 function calculateDistance(grille: Emplacement[][], start: Emplacement) {
 
-    let fn = (current: Emplacement, distance: number = 0) => {
+    let fn = (current: Emplacement, distance: number = 0): Emplacement[] => {
         current.setDistance(distance)
         if (current.previous.length > 0) {
             current.previous.forEach(prev => ensureLink(prev, current))
@@ -141,3 +155,5 @@ function ensureLink(previous: Emplacement, next: Emplacement): void {
     }
 }
 
+const gInit = new GrilleInitializer()
+export function getGrille() { return gInit.getGrille() }

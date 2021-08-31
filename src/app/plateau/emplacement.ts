@@ -1,10 +1,13 @@
 import { EmplacementType } from "../emplacement-type";
+import { IJoueur } from "../joueur/ijoueur";
 
 export class Emplacement {
+
 
     previous: Emplacement[] = []
     next: Emplacement[] = []
     distance: number | undefined = undefined;
+    joueur: IJoueur | undefined = undefined;
 
     constructor(public type: EmplacementType, public line: number, public column: number) {
 
@@ -22,5 +25,17 @@ export class Emplacement {
     }
     setDistance(distance: number) {
         this.distance = distance
+    }
+
+    removeJoueur() {
+        this.joueur = undefined
+    }
+
+    removeBarricade() {
+        this.type = EmplacementType.NORMAL
+    }
+
+    setJoueur(joueur: IJoueur) {
+        this.joueur = joueur
     }
 }

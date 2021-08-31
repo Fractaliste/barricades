@@ -1,26 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="40"
      height="40"
-     class="type-{{emplacement.type}}">
+     class="{{getClass()}}">
         <defs>
                 <g id="arrow">
                         <polyline points="20,18 20,2 15,7 25,7 20,2"
-                                  fill="none"
-                                   />
+                                  fill="none" />
                 </g>
         </defs>
         <circle cx="20"
                 cy="20"
                 r="18" />
-                <text x="20" y="20" fill="green">
-                        {{emplacement.distance}}
-                </text>
+
+        <text *ngIf="showDistance"
+              x="20"
+              y="20"
+              fill="green">
+                {{emplacement.distance}}
+        </text>
         <g *ngFor="let t of arrowPreviousTransformation">
-                <use href="#arrow" stroke="red"
+                <use href="#arrow"
+                     stroke="red"
                      attr.transform="translate({{t.dx}}, {{t.dy}}) rotate({{t.angle}}, 20, 20)" />
         </g>
         <g *ngFor="let t of arrowNextTransformation">
-                <use href="#arrow" stroke="blue"
+                <use href="#arrow"
+                     stroke="blue"
                      attr.transform="translate({{t.dx}}, {{t.dy}}) rotate({{t.angle}}, 20, 20)" />
         </g>
 
