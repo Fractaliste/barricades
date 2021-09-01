@@ -18,3 +18,10 @@ circle {
 .type-3 circle {
     display: none;
 }
+
+.highlightGreen circle{
+    stroke: #4efd54;
+}
+.highlightRed circle {
+    stroke: #ff073a;
+}

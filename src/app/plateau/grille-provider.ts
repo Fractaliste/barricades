@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { EmplacementType } from "../emplacement-type";
 import { Emplacement } from "./emplacement";
 
@@ -6,22 +7,23 @@ export class Grille extends Array<Array<Emplacement>> {
 
 }
 
-class GrilleInitializer {
+@Injectable({
+    providedIn: 'root',
+})
+export class GrilleProvider {
 
-    grille: Grille | undefined
 
-    /**
-     * getGrille
-     */
-    public getGrille(): Grille {
-        if (!this.grille) {
-            this.grille = this.initGrille()
-        }
-        return this.grille
+    subject: BehaviorSubject<Grille>;
+
+    constructor() {
+        this.subject = new BehaviorSubject(this.initGrille())
     }
 
+    public reset() {
+        this.subject.next(this.initGrille())
+    }
 
-    initGrille() {
+    private initGrille(): Grille {
 
         let l1 = this.getEmptyExcept(9)
         l1[9 - 1] = EmplacementType.ARRIVEE
@@ -57,7 +59,7 @@ class GrilleInitializer {
         return grille
     }
 
-    getEmptyExcept(...exception: number[]) {
+    private getEmptyExcept(...exception: number[]) {
         let allEmpties = this.generateSeqOfType(EmplacementType.VIDE, 17)
         exception.forEach(index => {
             allEmpties.splice(index - 1, 1, EmplacementType.NORMAL)
@@ -65,7 +67,7 @@ class GrilleInitializer {
         return allEmpties
     }
 
-    getNormalExcept(...exception: number[]) {
+    private getNormalExcept(...exception: number[]) {
         let allNormals = this.generateSeqOfType(EmplacementType.NORMAL, 17)
         exception.forEach(index => {
             allNormals.splice(index - 1, 1, EmplacementType.VIDE)
@@ -79,7 +81,7 @@ class GrilleInitializer {
 
 
 
-    debugGrille(empl: Emplacement) {
+    private debugGrille(empl: Emplacement) {
         console.log(`Line ${empl.line} column ${empl.column} next ${empl.next.length} prev ${empl.previous.length}`);
         empl.previous.forEach((prevEmpl) => this.debugGrille(prevEmpl))
     }
@@ -154,6 +156,3 @@ function ensureLink(previous: Emplacement, next: Emplacement): void {
 
     }
 }
-
-const gInit = new GrilleInitializer()
-export function getGrille() { return gInit.getGrille() }

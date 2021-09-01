@@ -4,10 +4,14 @@ import { IJoueur } from "../joueur/ijoueur";
 export class Emplacement {
 
 
+
     previous: Emplacement[] = []
     next: Emplacement[] = []
-    distance: number | undefined = undefined;
+    distance!: number;
     joueur: IJoueur | undefined = undefined;
+    flashGreen: boolean = false
+    flashRed: boolean = false
+    flashing: boolean = false
 
     constructor(public type: EmplacementType, public line: number, public column: number) {
 
@@ -37,5 +41,41 @@ export class Emplacement {
 
     setJoueur(joueur: IJoueur) {
         this.joueur = joueur
+    }
+
+    highlightGreen() {
+        if(this.flashing){
+            return
+        }
+        this.flashing = true
+        
+        let i = 0
+        let interval = setInterval(() => {
+            if (i++ > 10) {
+                clearInterval(interval)
+                this.flashGreen = false
+                this.flashing = false
+                return
+            }
+            this.flashGreen = !this.flashGreen
+        }, 100)
+    }
+
+    highlightRed() {
+        if(this.flashing){
+            return
+        }
+        this.flashing = true
+        
+        let i = 0
+        let interval = setInterval(() => {
+            if (i++ > 10) {
+                clearInterval(interval)
+                this.flashRed = false
+                this.flashing = false
+                return
+            }
+            this.flashRed = !this.flashRed
+        }, 100)
     }
 }

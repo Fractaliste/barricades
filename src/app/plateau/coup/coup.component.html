@@ -1,0 +1,7 @@
+<section *ngIf="joueurManager.currentPlayer">
+    <p><span class="fw-bold joueur-{{joueurManager.currentPlayer.numero}}-0">Player
+            {{joueurManager.currentPlayer.numero}}</span> got <span class="fw-bold">{{joueurManager.lanceDe}}</span> and
+        make movment from <span (mouseover)="highlightMovment()"
+              class="pointer">A</span> to <span (mouseover)="highlightMovment()"
+              class="pointer">B</span></p>
+</section>

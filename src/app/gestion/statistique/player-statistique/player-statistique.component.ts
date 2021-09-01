@@ -9,10 +9,12 @@ import { IJoueur } from 'src/app/joueur/ijoueur';
 export class PlayerStatistiqueComponent implements OnInit {
 
   @Input() player!: IJoueur
+  stats: any;
 
   constructor() { }
 
   ngOnInit(): void {
+    this.stats = this.player.stats
   }
 
 }

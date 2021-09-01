@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Grille } from '../grille-initializer';
+import { Grille, GrilleProvider } from '../grille-provider';
 
 @Component({
   selector: 'app-grille',
@@ -8,7 +8,10 @@ import { Grille } from '../grille-initializer';
 })
 export class GrilleComponent implements OnInit {
 
-  constructor(public grille: Grille) {
+  grille!: Grille
+
+  constructor(grilleProvider: GrilleProvider) {
+    grilleProvider.subject.subscribe(grille => this.grille = grille)
   }
 
 

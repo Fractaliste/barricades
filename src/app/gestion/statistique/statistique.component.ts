@@ -11,12 +11,11 @@ export class StatistiqueComponent implements OnInit {
 
   joueurs: IJoueur[] = [];
 
-  constructor(private joueurManager: JoueurManager) { }
+  constructor(private joueurManager: JoueurManager) {
+    joueurManager.joueurSubject.subscribe((joueurs) => this.joueurs = joueurs)
+  }
 
   ngOnInit(): void {
-    console.log(this.joueurManager);
-    
-    this.joueurs = this.joueurManager.joueurs
   }
 
 }

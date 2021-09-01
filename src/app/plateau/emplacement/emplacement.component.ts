@@ -30,11 +30,18 @@ export class EmplacementComponent implements OnInit {
    */
   public getClass() {
     // console.log("GetClass", this.emplacement.joueur);
-    
+
+    let additionnalClass: string = ""
+    if (this.emplacement.flashGreen) {
+      additionnalClass = "highlightGreen"
+    } else if (this.emplacement.flashRed) {
+      additionnalClass = "highlightRed"
+    }
+
     if (this.emplacement.joueur !== undefined) {
-      return `joueur-${this.emplacement.joueur.numero}-0`
+      return `joueur-${this.emplacement.joueur.numero}-0 ${additionnalClass}`
     } else {
-      return `type-${this.emplacement.type}`
+      return `type-${this.emplacement.type} ${additionnalClass}`
     }
   }
 

@@ -1,6 +1,6 @@
 import { EmplacementType } from "src/app/emplacement-type";
 import { Emplacement } from "src/app/plateau/emplacement";
-import { Grille } from "src/app/plateau/grille-initializer";
+import { Grille } from "src/app/plateau/grille-provider";
 import { IJoueur, joueur_numero_type, mouvement_type } from "../ijoueur";
 
 export abstract class AbstractJoueur implements IJoueur {
@@ -13,26 +13,36 @@ export abstract class AbstractJoueur implements IJoueur {
     pions: Emplacement[] = []
     barricades = 0
 
+    stats = { lost: 0, barricade: 0, eaten: 0 }
+
     constructor(public numero: joueur_numero_type) { }
 
     addPion(pion: Emplacement) {
+        console.log("add for player %s at line %s and clumn %s", this.numero, pion.line, pion.column);
         this.pions.push(pion)
     }
 
     removePion(pion: Emplacement): void {
-        this.pions.splice(this.pions.indexOf(pion), 1)
+        this.stats.lost++
+        let r = this.pions.splice(this.pions.indexOf(pion), 1)
+        console.log("removed for player %s at line %s and clumn %s", this.numero, pion.line, pion.column, r);
+
     }
 
-    addBarricade(): void {
+    eatPion() {
+        this.stats.eaten++
+    }
+
+    placeBarricade(grille: Grille): void {
+        this.stats.barricade++
         this.barricades++
     }
 
     private canCreateNewPion() {
-        
         return this.pions.length < AbstractJoueur.maxPions
     }
+
     private createNewPion(grille: Grille) {
-        console.log("createNewPion", this.numero, this.pions.length);
         return grille[grille.length - 1][AbstractJoueur.posInitialByPlayer[this.numero - 1 /* On est 1 - indexed pour les joueurs*/]]
     }
 
@@ -46,27 +56,26 @@ export abstract class AbstractJoueur implements IJoueur {
 
             // Create new pion consomme 1
             if (lanceDe > 1) {
-                mouvements.push({ from: undefined, to: this.getAllPositionRecursive(lanceDe - 1, newPion, undefined) })
+                mouvements.push(...this.getAllPositionRecursive(lanceDe - 1, newPion, undefined).map(position => {
+                    return { from: undefined, to: position }
+                }))
             } else {
-                mouvements.push({ from: undefined, to: [newPion] })
+                if (newPion.joueur !== this) {
+                    mouvements.push({ from: undefined, to: newPion })
+                }
             }
         }
         for (const pion of this.pions) {
-            mouvements.push({ from: pion, to: this.getAllPositionRecursive(lanceDe, pion, undefined) })
+            mouvements.push(... this.getAllPositionRecursive(lanceDe, pion, undefined).map(position => {
+                return { from: pion, to: position }
+            }))
         }
 
         return mouvements
     }
 
     private getAllPositionRecursive(lanceDe: number, pion: Emplacement, forbidden: Emplacement | undefined): Emplacement[] {
-        let applyFilter = (emplacements: Emplacement[]) => this.unique(emplacements).filter(emplacement => emplacement !== forbidden)
-
-        if (lanceDe < 1) {
-            console.log("getAllPositionRecursive", lanceDe, pion, forbidden);
-            console.trace()
-            throw new Error("0");
-
-        }
+        let applyFilter = (emplacements: Emplacement[]) => this.unique(emplacements).filter(emplacement => emplacement !== forbidden).filter(emplacement => emplacement.joueur === undefined || emplacement.joueur !== this)
 
         let pionsFiltered = applyFilter([...pion.next, ...pion.previous])
         if (lanceDe === 1) {

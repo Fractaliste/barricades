@@ -1,6 +1,4 @@
-import { PrefixNot } from "@angular/compiler";
-import { Emplacement } from "src/app/plateau/emplacement";
-import { Grille } from "src/app/plateau/grille-initializer";
+import { Grille } from "src/app/plateau/grille-provider";
 import { joueur_numero_type, mouvement_type } from "../ijoueur";
 import { AbstractJoueur } from "./abstract-joueur";
 
@@ -11,33 +9,15 @@ export class DefaultJoueur extends AbstractJoueur {
     }
 
     getMouvement(lanceDe: number, grille: Grille): mouvement_type {
-        let mouvements:mouvement_type[] = this.getAllPossiblePosition(lanceDe, grille)
-        console.log("mvt", mouvements);
+        let mouvements: mouvement_type[] = this.getAllPossiblePosition(lanceDe, grille)
+        console.debug("mvt", mouvements);
 
-        let reduced = mouvements.reduce((prev, current) => {
-            
-            let prevBestPosition = this.getMinDistance(prev.to)
-            let currentBestPosition = this.getMinDistance(current.to)
 
-            let bestPosition = this.getMinDistance([prevBestPosition, currentBestPosition])
-            
-            if (bestPosition === currentBestPosition) {
-                return { from: prev.from, to: [bestPosition] }
-            } else {
-                return { from: current.from, to: [bestPosition] }
-            }
+        let mouvements_sorted = mouvements.sort((a, b) => a.to.distance - b.to.distance)
+        let mouvement_filtered = mouvements_sorted.filter(mouvement => mouvement.from === undefined || mouvement.to.distance < mouvement.from.distance)
+        console.log(mouvements_sorted, mouvement_filtered);
 
-        })
-        return reduced
+        return mouvement_filtered[0]
     }
 
-    getMinDistance(emplacements: Emplacement[]): Emplacement {
-        return emplacements.reduce((prev, current) => {
-            if ((prev.distance ?? Number.MAX_VALUE) < (current.distance ?? Number.MAX_VALUE)) {
-                return prev
-            } else {
-                return current
-            }
-        })
-    }
 }
