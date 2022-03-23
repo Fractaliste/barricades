@@ -17,25 +17,37 @@ export abstract class AbstractJoueur implements IJoueur {
 
     constructor(public numero: joueur_numero_type) { }
 
+
     addPion(pion: Emplacement) {
-        console.log("add for player %s at line %s and clumn %s", this.numero, pion.line, pion.column);
         this.pions.push(pion)
     }
 
     removePion(pion: Emplacement): void {
         this.stats.lost++
         let r = this.pions.splice(this.pions.indexOf(pion), 1)
-        console.log("removed for player %s at line %s and clumn %s", this.numero, pion.line, pion.column, r);
-
     }
 
     eatPion() {
         this.stats.eaten++
     }
 
-    placeBarricade(grille: Grille): void {
+    addBarricade(): void {
         this.stats.barricade++
         this.barricades++
+    }
+
+    placeBarricade(grille: Grille): void {
+        if (this.barricades > 0) {
+            this.barricades--
+            let emplacementBarricade = grille.flatMap(e => e)
+                .filter(e => e.type === EmplacementType.NORMAL)
+                .filter(e => e.joueur === undefined)
+                .filter(e => e.line < 13)
+                .map(e => ({ emplacement: e, random: Math.random() * 100 }))
+                .sort((a, b) => a.random - b.random)
+                .map(e => e.emplacement)[0]
+                emplacementBarricade.setBarricade()
+        }
     }
 
     private canCreateNewPion() {

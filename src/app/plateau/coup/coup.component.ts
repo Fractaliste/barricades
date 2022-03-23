@@ -14,10 +14,7 @@ export class CoupComponent implements OnInit {
   }
 
   highlightMovment() {
-    
     if(this.joueurManager.mouvement){
-      console.log("high",  this.joueurManager.mouvement.from);
-      
       this.joueurManager.mouvement.from?.highlightRed()
       this.joueurManager.mouvement.to.highlightGreen()
     }

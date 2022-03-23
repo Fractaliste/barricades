@@ -1,12 +1,19 @@
-<button type="button"
-        class="btn btn-sm btn-info mx-1"
-        (click)="onStart()">Start</button>
-<button type="button"
-        class="btn btn-sm btn-info mx-1"
-        (click)="onStop()">Stop</button>
-<button type="button"
-        class="btn btn-sm btn-info mx-1"
-        (click)="onPasAPas()">PAP</button>
-<button type="button"
-        class="btn btn-sm btn-info mx-1"
-        (click)="onReset()">Reset</button>
+<section class="row">
+        <button type="button"
+                class="{{classBtn}}"
+                (click)="partieManager.onStart()">Start</button>
+        <button type="button"
+                class="{{classBtn}}"
+                (click)="partieManager.onPause()">Stop</button>
+        <button type="button"
+                class="{{classBtn}}"
+                (click)="partieManager.onPasAPas()">PAP</button>
+        <button type="button"
+                class="{{classBtn}}"
+                (click)="onReset()">Reset</button>
+</section>
+<section class="row">
+        <button type="button"
+                class="{{classBtn}}"
+                (click)="onLoop()">Launch {{nbPartie}}</button>
+</section>

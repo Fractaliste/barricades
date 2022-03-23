@@ -42,7 +42,7 @@ export class JoueurManager {
         let returnValue: boolean = false
 
         this.currentPlayer = this.joueurs[this.nextPlayer];
-        console.log("Tour de jeu du joueur %s avec le lancé de dé %s", this.currentPlayer.numero, this.lanceDe);
+        // console.log("Tour de jeu du joueur %s avec le lancé de dé %s", this.currentPlayer.numero, this.lanceDe);
 
         // Choix du mouvement
         this.mouvement = this.currentPlayer.getMouvement(this.lanceDe, grille)
@@ -50,7 +50,7 @@ export class JoueurManager {
         if (this.mouvement && this.mouvement.to) {
             const { from, to } = this.mouvement
 
-            console.debug("Mouvement choisis", this.mouvement)
+            // console.debug("Mouvement choisis", this.mouvement)
 
             // Check emplacement autre joueur
             if (to.joueur !== undefined) {
@@ -70,10 +70,10 @@ export class JoueurManager {
             to.setJoueur(this.currentPlayer)
 
             // Barricade
+            this.currentPlayer.placeBarricade(grille)
             if (to.type === EmplacementType.BARRICADE) {
                 to.removeBarricade()
-                this.currentPlayer.placeBarricade(grille)
-                // @TODO placer barricade
+                this.currentPlayer.addBarricade()
             }
             returnValue = to.type === EmplacementType.ARRIVEE
         }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JoueurManager } from 'src/app/joueur/joueur-manager';
-import { Grille, GrilleProvider } from 'src/app/plateau/grille-provider';
+import { GrilleProvider } from 'src/app/plateau/grille-provider';
+import { PartieManager } from '../partie-manager';
 
 @Component({
   selector: 'app-action',
@@ -9,75 +10,24 @@ import { Grille, GrilleProvider } from 'src/app/plateau/grille-provider';
 })
 export class ActionComponent implements OnInit {
 
-  grille!: Grille;
-  timeoutNumber?: any;
-  timingRecorder: number[] = []
-  nbLanceDe = 0
-  pasAPas = false
+  classBtn = "col btn btn-sm btn-info mx-1"
 
-  constructor(private joueurManager: JoueurManager, private grilleProvider: GrilleProvider) {
-    grilleProvider.subject.subscribe(grille => this.grille = grille)
+  nbPartie = 10
+
+  constructor(public partieManager: PartieManager, private joueurManager: JoueurManager, private grilleProvider: GrilleProvider) {
   }
 
   ngOnInit(): void {
   }
 
   onReset() {
-    this.onStop()
+    this.partieManager.reset()
     this.joueurManager.reset()
     this.grilleProvider.reset()
-    this.timingRecorder = []
-    this.nbLanceDe = 0
+}
+  onLoop() {
+    this.partieManager.onPause()
   }
 
-  onStop() {
-    clearTimeout(this.timeoutNumber)
-  }
-
-  onPasAPas() {
-    this.pasAPas = true
-    this.onStart()
-  }
-
-  onStart() {
-    console.log("The game start !");
-
-    let play = () => {
-      this.nbLanceDe++
-      console.log("Next player");
-
-      this.timeoutNumber = setTimeout(() => {
-        let t0 = Date.now()
-        let isWon = this.joueurManager.play(this.grille)
-        this.timingRecorder.push(Date.now() - t0)
-        if (isWon) {
-          console.log("A player has won");
-          this.calculateStats()
-        } else if (this.nbLanceDe > 100) {
-          console.log("Game finished after %s try", this.nbLanceDe);
-        } else {
-          if (this.pasAPas) {
-            this.pasAPas = false
-          } else {
-            play()
-          }
-        }
-      }, this.pasAPas ? 0 : 20)
-    }
-    play()
-  }
-
-  calculateStats() {
-    let sorted = this.timingRecorder.sort()
-    let avg = sorted.reduce((prev, next) => prev + next) / sorted.length
-    let med = sorted.length % 2 === 0 ? ((sorted[sorted.length / 2] + sorted[sorted.length / 2 + 1]) / 2) : sorted[Math.floor(sorted.length / 2) + 1]
-
-    console.log("Min %sms, max %sms, avg %sms, med %sms", sorted[0], sorted[sorted.length - 1], avg, med);
-
-
-    let a = this.grille.flatMap(l => l).filter(e => e.joueur !== undefined)
-    console.log(a);
-
-  }
 
 }

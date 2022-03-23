@@ -3,8 +3,6 @@ import { IJoueur } from "../joueur/ijoueur";
 
 export class Emplacement {
 
-
-
     previous: Emplacement[] = []
     next: Emplacement[] = []
     distance!: number;
@@ -37,6 +35,10 @@ export class Emplacement {
 
     removeBarricade() {
         this.type = EmplacementType.NORMAL
+    }
+    
+    setBarricade() {
+        this.type = EmplacementType.BARRICADE
     }
 
     setJoueur(joueur: IJoueur) {
