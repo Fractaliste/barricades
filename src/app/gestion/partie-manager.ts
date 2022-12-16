@@ -1,4 +1,6 @@
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { IJoueur } from "../joueur/ijoueur";
 import { JoueurManager } from "../joueur/joueur-manager";
 import { Grille, GrilleProvider } from "../plateau/grille-provider";
 
@@ -14,6 +16,7 @@ export class PartieManager {
     pasAPas = false
     gameFinished: boolean = false
     nbMaxCoup = 1000
+    gameFinishedSubject = new Subject<IJoueur>()
 
 
     constructor(private joueurManager: JoueurManager, private grilleProvider: GrilleProvider) {
@@ -25,6 +28,9 @@ export class PartieManager {
 
     reset() {
         this.onPause()
+
+        this.joueurManager.reset()
+        this.grilleProvider.reset()
         this.timingRecorder = []
         this.nbLanceDe = 0
         this.gameFinished = false
@@ -34,7 +40,6 @@ export class PartieManager {
     onPause() {
         clearTimeout(this.timeoutNumber)
     }
-
 
     onPasAPas() {
         this.pasAPas = true
@@ -49,7 +54,32 @@ export class PartieManager {
         }
 
         console.log("The game start !");
+        this.play()
     }
+
+    /**
+     * Enchaine x parties
+     */
+    onLoop() {
+        let nbPartiesRestantes = 50
+        const stats: any = {}
+
+        this.gameFinishedSubject.subscribe(joueur => {
+            const winner = this.joueurManager.currentPlayer;
+
+            if (winner) {
+                stats[winner.numero] = stats[winner.numero] ? [...stats[winner.numero], nbPartiesRestantes] : [nbPartiesRestantes]
+            }
+            if (nbPartiesRestantes-- > 0) {
+                this.onStart()
+            } else {
+                console.log("Parties terminées", stats);
+
+            }
+        })
+        this.onStart()
+    }
+
     play() {
         if (this.gameFinished) {
             return
@@ -81,6 +111,9 @@ export class PartieManager {
     private onGameFinished() {
         this.calculateStats();
         this.gameFinished = true;
+        if (this.joueurManager.currentPlayer) {
+            this.gameFinishedSubject.next(this.joueurManager.currentPlayer)
+        }
     }
 
     calculateStats() {

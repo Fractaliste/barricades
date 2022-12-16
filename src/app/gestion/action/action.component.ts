@@ -14,7 +14,7 @@ export class ActionComponent implements OnInit {
 
   nbPartie = 10
 
-  constructor(public partieManager: PartieManager, private joueurManager: JoueurManager, private grilleProvider: GrilleProvider) {
+  constructor(public partieManager: PartieManager) {
   }
 
   ngOnInit(): void {
@@ -22,11 +22,9 @@ export class ActionComponent implements OnInit {
 
   onReset() {
     this.partieManager.reset()
-    this.joueurManager.reset()
-    this.grilleProvider.reset()
 }
   onLoop() {
-    this.partieManager.onPause()
+    this.partieManager.onLoop()
   }
 
 

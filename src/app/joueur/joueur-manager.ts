@@ -22,11 +22,13 @@ export class JoueurManager {
         this.reset()
     }
 
-    reset() {
+    public reset() {
         this.createJoueurs()
         if (this.joueurs.length !== 4) {
             throw new Error("Must have 4 players");
         }
+        this.nextPlayer = 0
+        this.currentPlayer = this.joueurs[this.nextPlayer];
         if (!this.joueurSubject) {
             this.joueurSubject = new BehaviorSubject(this.joueurs)
         } else {

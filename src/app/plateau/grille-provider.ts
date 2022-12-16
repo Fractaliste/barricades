@@ -55,7 +55,7 @@ export class GrilleProvider {
 
         linkTopAndBottom(grille)
         calculateDistance(grille, grille[0][9 - 1])
-        console.log(grille);
+        // console.log(grille);
         return grille
     }
 
